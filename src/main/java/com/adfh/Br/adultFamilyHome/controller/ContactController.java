@@ -1,11 +1,10 @@
 package com.adfh.Br.adultFamilyHome.controller;
 
+import com.adfh.Br.adultFamilyHome.service.EmailNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,24 +13,43 @@ public class ContactController {
     private final EmailNotificationService emailService;
 
     @PostMapping("/contact")
-    public String handleContactForm(@RequestBody Map<String, String> formData){
-        String name = formData.get("name");
-        String email = formData.get("email");
-        String phone = formData.get("phone");
-        String message = formData.get("message");
+    public String handleContactForm(
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam String message) {
 
         String subject = "New Contact Message from " + name;
-        String body = "Name: " + name +  "\nPhone: " + phone + "\nEmail: " + email + "\n\nMessage:\n" + message;
 
-        // Send the email to your admin inbox
-        emailService.send("hcomfortafh@gmail.com", subject, body);
+        String adminBody =
+                "Name: " + name +
+                        "\nPhone: " + phone +
+                        "\nEmail: " + email +
+                        "\n\nMessage:\n" + message;
 
-        // Optional: send confirmation email to the user
-        emailService.send(email,
-                "Thank you for contacting Hana comfort AFH \n",
-                "Hello, " + name + ",\n" + "We've received your message and will get back to you soon.\n" + "\nThank you!" + "\nHaha Comfort - Adult Family Home");
+        try {
+            // 📩 Send email TO YOU
+            emailService.sendToAdmin(
+                    "hcomfortafh@gmail.com",
+                    subject,
+                    adminBody,
+                    email   // reply-to user
+            );
 
+            // 📩 Send confirmation TO USER
+            emailService.sendToUser(
+                    email,
+                    "Thank you for contacting Hana Comfort AFH",
+                    "Hello " + name + ",\n\n" +
+                            "We received your message and will contact you soon.\n\n" +
+                            "Thank you!"
+            );
 
-        return "redirect:/?success=true";
+            return "redirect:/?success=true";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/?error=true";
+        }
     }
 }
