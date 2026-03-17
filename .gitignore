@@ -1,5 +1,6 @@
-echo ".idea/
+.idea/
 target/
 *.iml
 *.log
-" >> .gitignore
+.env
+application-local.properties

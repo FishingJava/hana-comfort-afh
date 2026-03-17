@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -25,12 +24,12 @@ public class ContactController {
         String body = "Name: " + name +  "\nPhone: " + phone + "\nEmail: " + email + "\n\nMessage:\n" + message;
 
         // Send the email to your admin inbox
-        emailService.send("fishingofjava@gmail.com", subject, body);
+        emailService.send("hcomfortafh@gmail.com", subject, body);
 
         // Optional: send confirmation email to the user
         emailService.send(email,
-                "Thank you for contacting Silver Oak -Nathen AFH \n",
-                "Hello, " + name + ",\n" + "We've received your message and will get back to you soon.\n" + "\nThank you!" + "\nSilver Oak - Nathen Adult Family Home");
+                "Thank you for contacting Hana comfort AFH \n",
+                "Hello, " + name + ",\n" + "We've received your message and will get back to you soon.\n" + "\nThank you!" + "\nHaha Comfort - Adult Family Home");
 
 
         return "redirect:/?success=true";
